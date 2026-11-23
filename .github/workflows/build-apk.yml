@@ -1,0 +1,36 @@
+name: Build Clean Your TV APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar proyecto
+        uses: actions/checkout@v4
+
+      - name: Instalar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Descomprimir proyecto
+        run: |
+          mkdir project
+          unzip -o Clean_Your_TV_Android_Project.zip -d project
+
+      - name: Compilar APK
+        run: |
+          gradle -p project assembleDebug
+
+      - name: Guardar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Clean-Your-TV-APK
+          path: project/app/build/outputs/apk/debug/app-debug.apk
+          
